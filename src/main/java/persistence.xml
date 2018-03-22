@@ -23,7 +23,6 @@
 		<property name="hibernate.current_session_context_class">thread</property>
 		
 		<!-- Entidades a mapear -->
-		<mapping class="entities.Test" />
 		<mapping class="entities.Car" />
 		
 	</session-factory>
