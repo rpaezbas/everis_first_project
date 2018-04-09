@@ -9,32 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import controller.JSONRequest;
-
 @Entity
 @Table(name = "Car")
 public class Car {
 	
 	public Car() {
 	}
-	
-	public Car(JSONRequest jsonRequest) {
-		this.setId(jsonRequest.id);
-		this.setBrand(jsonRequest.brand);
-		this.setCountry(jsonRequest.country);
-		this.setRegistration( new Timestamp (jsonRequest.registration));
-		this.setCreatedAt( new Timestamp (jsonRequest.createdAt));
-		this.setLastUpdated(new Timestamp (jsonRequest.lastUpdated));
-	}
-	
-	public void update(JSONRequest jsonRequest) {
-		this.setBrand(jsonRequest.brand);
-		this.setCountry(jsonRequest.country);
-		this.setRegistration( new Timestamp (jsonRequest.registration));
-		this.setCreatedAt( new Timestamp (jsonRequest.createdAt));
-		this.setLastUpdated(new Timestamp (jsonRequest.lastUpdated));
-	}
-	
+		
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id",nullable = true)
@@ -139,5 +120,12 @@ public class Car {
 		this.lastUpdated = lastUpdated;
 	}
 	
+	public void copyValuesFrom(Car car) {
+		this.setBrand(car.getBrand());
+		this.setCountry(car.getCountry());
+		this.setCreatedAt(car.getCreatedAt());
+		this.setLastUpdated(car.getLastUpdated());
+		this.setRegistration(car.getRegistration());
+	}
 
 }

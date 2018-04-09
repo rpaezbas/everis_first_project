@@ -1,6 +1,5 @@
 package resources;
 
-import java.sql.Timestamp;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -10,21 +9,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import controller.Controller;
-import controller.JSONRequest;
 
 import entities.Car;
 
 @Path("/")
 public class Rest {
 
-	//Get every car in table Car
+	// Get every car in table Car
 	@GET
 	@Produces("application/json")
 	public Response getAllCars() {
@@ -47,7 +42,7 @@ public class Rest {
 		return response;
 	}
 
-	//Get single car by id
+	// Get single car by id
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
@@ -74,17 +69,16 @@ public class Rest {
 		return response;
 	}
 
-	//Create car
+	// Create car
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response postCar(final JSONRequest jsonRequest) {
+	public Response postCar(final Car car) {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
-		System.out.println("Created at:" + jsonRequest.createdAt);
 		try {
-			Car car = new Car(jsonRequest);
+			System.out.println(car.getCreatedAt());
 			session.save(car);
 			session.getTransaction().commit();
 			response = Response.status(201).entity(car).build();
@@ -93,29 +87,28 @@ public class Rest {
 				transaction.rollback();
 				response = Response.status(500).build();
 				hibernateEx.printStackTrace();
-				session.close();
 			} catch (HibernateException rollbackEx) {
 				response = Response.status(500).build();
 				rollbackEx.printStackTrace();
-				session.close();
 			}
 		}
 		return response;
 	}
 
-	//Update car by id
+	// Update car by id
 	@PUT
 	@Path("/{id}")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response postCar(@PathParam("id") int id, final JSONRequest jsonRequest) {
+	public Response updateCar(@PathParam("id") int id, final Car updatedCar) {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 		try {
 			Car deprecatedCar = (Car) session.get(Car.class, id); // This is the car we want to update
-			deprecatedCar.update(jsonRequest);
-			//In case the request includes the id, it changes to the id in the URL
+			System.out.println(updatedCar);
+			System.out.println(deprecatedCar);
+			deprecatedCar.copyValuesFrom(updatedCar);
 			session.update(deprecatedCar);
 			session.getTransaction().commit();
 			response = Response.status(200).entity(deprecatedCar).build();
@@ -124,17 +117,17 @@ public class Rest {
 				transaction.rollback();
 				response = Response.status(400).build();
 				hibernateEx.printStackTrace();
-				session.close();
+				//session.close();
 			} catch (HibernateException rollbackEx) {
 				response = Response.status(500).build();
 				rollbackEx.printStackTrace();
-				session.close();
+				//session.close();
 			}
 		}
 		return response;
 	}
 
-	//Delete single car by id
+	// Delete single car by id
 	@DELETE
 	@Path("/{id}")
 	@Produces("application/json")
