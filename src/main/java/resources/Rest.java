@@ -24,7 +24,7 @@ import entities.Car;
 @Path("/")
 public class Rest {
 
-	// Get every car in table Car
+	//Get every car in table Car
 	@GET
 	@Produces("application/json")
 	public Response getAllCars() {
@@ -47,7 +47,7 @@ public class Rest {
 		return response;
 	}
 
-	// Get single car by id
+	//Get single car by id
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
@@ -74,7 +74,7 @@ public class Rest {
 		return response;
 	}
 
-	// Post car
+	//Create car
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -103,7 +103,7 @@ public class Rest {
 		return response;
 	}
 
-	// Update car by id
+	//Update car by id
 	@PUT
 	@Path("/{id}")
 	@Consumes("application/json")
@@ -134,7 +134,7 @@ public class Rest {
 		return response;
 	}
 
-	// Delete single car by id
+	//Delete single car by id
 	@DELETE
 	@Path("/{id}")
 	@Produces("application/json")
