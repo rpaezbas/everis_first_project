@@ -1,6 +1,7 @@
 package resources;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,19 +14,16 @@ import javax.ws.rs.core.Response;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import entities.Car;
 
 @Path("/")
 public class Rest {
-
 	// Get every car in table Car
 	@GET
 	@Produces("application/json")
 	public Response getAllCars() {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction transaction = session.beginTransaction();
 		try {
 			List<Car> cars = session.createQuery("from Car").list();
 			session.getTransaction().commit();
@@ -67,6 +65,7 @@ public class Rest {
 			}
 		}
 		return response;
+		//return controller.getCar(id);
 	}
 
 	// Create car
