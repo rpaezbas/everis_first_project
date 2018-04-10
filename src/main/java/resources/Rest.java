@@ -1,7 +1,6 @@
 package resources;
 
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -14,7 +13,9 @@ import javax.ws.rs.core.Response;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import entities.Car;
+
 
 @Path("/")
 public class Rest {
@@ -24,10 +25,11 @@ public class Rest {
 	public Response getAllCars() {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Transaction transaction = session.beginTransaction();
 		try {
 			List<Car> cars = session.createQuery("from Car").list();
 			session.getTransaction().commit();
-			response = Response.status(201).entity(cars).build();
+			response = Response.status(200).entity(cars).build();
 		} catch (HibernateException hibernateEx) {
 			try {
 				response = Response.status(500).build();
@@ -51,7 +53,11 @@ public class Rest {
 		try {
 			Car car = (Car) session.get(Car.class, id);
 			session.getTransaction().commit();
-			response = Response.status(201).entity(car).build();
+			if (car != null) {
+				response = Response.status(201).entity(car).build();
+			} else {
+				response = Response.status(404).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				transaction.rollback();
@@ -65,7 +71,6 @@ public class Rest {
 			}
 		}
 		return response;
-		//return controller.getCar(id);
 	}
 
 	// Create car
@@ -116,11 +121,11 @@ public class Rest {
 				transaction.rollback();
 				response = Response.status(400).build();
 				hibernateEx.printStackTrace();
-				//session.close();
+				// session.close();
 			} catch (HibernateException rollbackEx) {
 				response = Response.status(500).build();
 				rollbackEx.printStackTrace();
-				//session.close();
+				// session.close();
 			}
 		}
 		return response;
@@ -138,7 +143,7 @@ public class Rest {
 			Car car = (Car) session.get(Car.class, id);
 			session.delete(car);
 			transaction.commit();
-			response = Response.status(201).entity(car).build();
+			response = Response.status(200).entity(car).build();
 		} catch (HibernateException hibernateEx) {
 			try {
 				transaction.rollback();
