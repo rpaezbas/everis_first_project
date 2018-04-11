@@ -8,7 +8,7 @@ import javax.ws.rs.ext.Provider;
 
 //This class includes headers needed in http responses when requests come from any origin. It solves the typical CORS issues. When the server 
 //sends a response, it adds the different headers needed. Also it handles the preflight http response before the UPDATE,PUT and DELETE requests.
-
+//The Provider annotation makes it been used by every Application
 @Provider
 public class CorsFilter implements ContainerResponseFilter {
 

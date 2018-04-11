@@ -15,7 +15,8 @@ public class Car {
 	
 	public Car() {
 	}
-		
+	
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id",nullable = true)
