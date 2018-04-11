@@ -23,14 +23,26 @@ public class Rest {
 	// Get every car in table Car
 	@GET
 	@Produces("application/json")
-	public Response getAllCars() {
+	public Response getAllCars(@HeaderParam("authorization") final String authorization) {
+
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
+
 		try {
-			List<Car> cars = session.createQuery("from Car").list();
-			session.getTransaction().commit();
-			response = Response.status(200).entity(cars).build();
+			// Check if the token in the header can be verified
+			if (AuthUtil.verifyTokenInHeader(authorization)) {
+				List<Car> cars = session.createQuery("from Car").list();
+				session.getTransaction().commit();
+				if (cars != null) {
+					response = Response.status(200).entity(cars).build();
+				} else {
+					response = Response.status(404).build();
+				}
+				// If the token doesnt verify
+			} else {
+				response = Response.status(401).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				response = Response.status(500).build();
@@ -47,30 +59,28 @@ public class Rest {
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
-	public Response getCarbyId(@PathParam("id") int id, @HeaderParam("authorization") String authorization) {
+	public Response getCarbyId(@PathParam("id") final int id,
+			@HeaderParam("authorization") final String authorization) {
+
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
+
 		try {
-			//Check if the token in the header can be verified
+			// Check if the token in the header can be verified
 			if (AuthUtil.verifyTokenInHeader(authorization)) {
-				
 				Car car = (Car) session.get(Car.class, id);
 				session.getTransaction().commit();
-				
 				if (car != null) {
 					response = Response.status(201).entity(car).build();
 				} else {
 					response = Response.status(404).build();
 				}
-				
-			//If the token doesnt verify
+				// If the token doesnt verify
 			} else {
 				response = Response.status(401).build();
 			}
-			
 		} catch (HibernateException hibernateEx) {
-			
 			try {
 				transaction.rollback();
 				response = Response.status(500).build();
@@ -81,9 +91,7 @@ public class Rest {
 				rollbackEx.printStackTrace();
 				session.close();
 			}
-			
 		}
-
 		return response;
 	}
 
@@ -91,15 +99,20 @@ public class Rest {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response postCar(final Car car) {
+	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 		try {
-			System.out.println(car.getCreatedAt());
-			session.save(car);
-			session.getTransaction().commit();
-			response = Response.status(201).entity(car).build();
+			// Check if the token in the header can be verified
+			if (AuthUtil.verifyTokenInHeader(authorization)) {
+				session.save(car);
+				session.getTransaction().commit();
+				response = Response.status(201).entity(car).build();
+				// If the token doesnt verify
+			} else {
+				response = Response.status(401).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				transaction.rollback();
@@ -118,28 +131,33 @@ public class Rest {
 	@Path("/{id}")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response updateCar(@PathParam("id") int id, final Car updatedCar) {
+	public Response updateCar(@PathParam("id") final int id, final Car updatedCar,
+			@HeaderParam("authorization") final String authorization) {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 		try {
-			Car deprecatedCar = (Car) session.get(Car.class, id); // This is the car we want to update
-			System.out.println(updatedCar);
-			System.out.println(deprecatedCar);
-			deprecatedCar.copyValuesFrom(updatedCar);
-			session.update(deprecatedCar);
-			session.getTransaction().commit();
-			response = Response.status(200).entity(deprecatedCar).build();
+			// Check if the token in the header can be verified
+			if (AuthUtil.verifyTokenInHeader(authorization)) {
+				Car deprecatedCar = (Car) session.get(Car.class, id); // This is the car we want to update
+				System.out.println(updatedCar);
+				System.out.println(deprecatedCar);
+				deprecatedCar.copyValuesFrom(updatedCar);
+				session.update(deprecatedCar);
+				session.getTransaction().commit();
+				response = Response.status(200).entity(deprecatedCar).build();
+				// If the token doesnt verify
+			} else {
+				response = Response.status(401).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				transaction.rollback();
 				response = Response.status(400).build();
 				hibernateEx.printStackTrace();
-				// session.close();
 			} catch (HibernateException rollbackEx) {
 				response = Response.status(500).build();
 				rollbackEx.printStackTrace();
-				// session.close();
 			}
 		}
 		return response;
@@ -149,15 +167,21 @@ public class Rest {
 	@DELETE
 	@Path("/{id}")
 	@Produces("application/json")
-	public Response deleteCarbyId(@PathParam("id") int id) {
+	public Response deleteCarbyId(@PathParam("id") int id, @HeaderParam("authorization") final String authorization) {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 		try {
-			Car car = (Car) session.get(Car.class, id);
-			session.delete(car);
-			transaction.commit();
-			response = Response.status(200).entity(car).build();
+			// Check if the token in the header can be verified
+			if (AuthUtil.verifyTokenInHeader(authorization)) {
+				Car car = (Car) session.get(Car.class, id);
+				session.delete(car);
+				transaction.commit();
+				response = Response.status(200).entity(car).build();
+				// If the token doesnt verify
+			} else {
+				response = Response.status(401).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				transaction.rollback();
