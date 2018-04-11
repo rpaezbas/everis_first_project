@@ -44,13 +44,8 @@ public class Rest {
 				response = Response.status(401).build();
 			}
 		} catch (HibernateException hibernateEx) {
-			try {
-				response = Response.status(500).build();
-				hibernateEx.printStackTrace();
-			} catch (HibernateException rollbackEx) {
-				response = Response.status(500).build();
-				rollbackEx.printStackTrace();
-			}
+			response = Response.status(500).build();
+			hibernateEx.printStackTrace();
 		}
 		return response;
 	}
@@ -81,16 +76,9 @@ public class Rest {
 				response = Response.status(401).build();
 			}
 		} catch (HibernateException hibernateEx) {
-			try {
-				transaction.rollback();
-				response = Response.status(500).build();
-				hibernateEx.printStackTrace();
-				session.close();
-			} catch (HibernateException rollbackEx) {
-				response = Response.status(500).build();
-				rollbackEx.printStackTrace();
-				session.close();
-			}
+			response = Response.status(500).build();
+			hibernateEx.printStackTrace();
+			session.close();
 		}
 		return response;
 	}
