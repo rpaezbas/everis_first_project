@@ -29,9 +29,10 @@ public class Rest {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 
-		try {
-			// Check if the token in the header can be verified
-			if (AuthUtil.verifyTokenInHeader(authorization)) {
+		// Check if the token in the header can be verified
+		if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+			try {
 				List<Car> cars = session.createQuery("from Car").list();
 				session.getTransaction().commit();
 				if (cars != null) {
@@ -39,14 +40,16 @@ public class Rest {
 				} else {
 					response = Response.status(404).build();
 				}
-				// If the token doesnt verify
-			} else {
-				response = Response.status(401).build();
+			} catch (HibernateException hibernateEx) {
+				response = Response.status(500).build();
+				hibernateEx.printStackTrace();
 			}
-		} catch (HibernateException hibernateEx) {
-			response = Response.status(500).build();
-			hibernateEx.printStackTrace();
+
+			// If the token doesnt verify
+		} else {
+			response = Response.status(401).build();
 		}
+
 		return response;
 	}
 
@@ -61,9 +64,10 @@ public class Rest {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
 
-		try {
-			// Check if the token in the header can be verified
-			if (AuthUtil.verifyTokenInHeader(authorization)) {
+		// Check if the token in the header can be verified
+		if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+			try {
 				Car car = (Car) session.get(Car.class, id);
 				session.getTransaction().commit();
 				if (car != null) {
@@ -71,15 +75,17 @@ public class Rest {
 				} else {
 					response = Response.status(404).build();
 				}
-				// If the token doesnt verify
-			} else {
-				response = Response.status(401).build();
+			} catch (HibernateException hibernateEx) {
+				response = Response.status(500).build();
+				hibernateEx.printStackTrace();
+				session.close();
 			}
-		} catch (HibernateException hibernateEx) {
-			response = Response.status(500).build();
-			hibernateEx.printStackTrace();
-			session.close();
+
+			// If the token doesnt verify
+		} else {
+			response = Response.status(401).build();
 		}
+
 		return response;
 	}
 
@@ -91,26 +97,30 @@ public class Rest {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
-		try {
-			// Check if the token in the header can be verified
-			if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+		// Check if the token in the header can be verified
+		if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+			try {
 				session.save(car);
 				session.getTransaction().commit();
 				response = Response.status(201).entity(car).build();
-				// If the token doesnt verify
-			} else {
-				response = Response.status(401).build();
+			} catch (HibernateException hibernateEx) {
+				try {
+					transaction.rollback();
+					response = Response.status(500).build();
+					hibernateEx.printStackTrace();
+				} catch (HibernateException rollbackEx) {
+					response = Response.status(500).build();
+					rollbackEx.printStackTrace();
+				}
 			}
-		} catch (HibernateException hibernateEx) {
-			try {
-				transaction.rollback();
-				response = Response.status(500).build();
-				hibernateEx.printStackTrace();
-			} catch (HibernateException rollbackEx) {
-				response = Response.status(500).build();
-				rollbackEx.printStackTrace();
-			}
+
+			// If the token doesnt verify
+		} else {
+			response = Response.status(401).build();
 		}
+
 		return response;
 	}
 
@@ -124,9 +134,11 @@ public class Rest {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
-		try {
-			// Check if the token in the header can be verified
-			if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+		// Check if the token in the header can be verified
+		if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+			try {
 				Car deprecatedCar = (Car) session.get(Car.class, id); // This is the car we want to update
 				System.out.println(updatedCar);
 				System.out.println(deprecatedCar);
@@ -134,19 +146,20 @@ public class Rest {
 				session.update(deprecatedCar);
 				session.getTransaction().commit();
 				response = Response.status(200).entity(deprecatedCar).build();
-				// If the token doesnt verify
-			} else {
-				response = Response.status(401).build();
+			} catch (HibernateException hibernateEx) {
+				try {
+					transaction.rollback();
+					response = Response.status(400).build();
+					hibernateEx.printStackTrace();
+				} catch (HibernateException rollbackEx) {
+					response = Response.status(500).build();
+					rollbackEx.printStackTrace();
+				}
 			}
-		} catch (HibernateException hibernateEx) {
-			try {
-				transaction.rollback();
-				response = Response.status(400).build();
-				hibernateEx.printStackTrace();
-			} catch (HibernateException rollbackEx) {
-				response = Response.status(500).build();
-				rollbackEx.printStackTrace();
-			}
+
+			// If the token doesnt verify
+		} else {
+			response = Response.status(401).build();
 		}
 		return response;
 	}
@@ -159,29 +172,33 @@ public class Rest {
 		Response response;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction transaction = session.beginTransaction();
-		try {
-			// Check if the token in the header can be verified
-			if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+		// Check if the token in the header can be verified
+		if (AuthUtil.verifyTokenInHeader(authorization)) {
+
+			try {
 				Car car = (Car) session.get(Car.class, id);
 				session.delete(car);
 				transaction.commit();
 				response = Response.status(200).entity(car).build();
-				// If the token doesnt verify
-			} else {
-				response = Response.status(401).build();
+			} catch (HibernateException hibernateEx) {
+				try {
+					transaction.rollback();
+					response = Response.status(500).build();
+					hibernateEx.printStackTrace();
+					session.close();
+				} catch (HibernateException rollbackEx) {
+					response = Response.status(500).build();
+					rollbackEx.printStackTrace();
+					session.close();
+				}
 			}
-		} catch (HibernateException hibernateEx) {
-			try {
-				transaction.rollback();
-				response = Response.status(500).build();
-				hibernateEx.printStackTrace();
-				session.close();
-			} catch (HibernateException rollbackEx) {
-				response = Response.status(500).build();
-				rollbackEx.printStackTrace();
-				session.close();
-			}
+
+			// If the token doesnt verify
+		} else {
+			response = Response.status(401).build();
 		}
+
 		return response;
 	}
 }

@@ -8,12 +8,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class AuthUtil {
 
-	static String clientKey = "7q8Owacjr2xKCOE7YwRnUBPwG7LJmRP31abbFPR-3oS7FAJOCSddJEybtjHK6Wcf";
-	static String domain = "rpaezbas.auth0.com";
-	static String clientId = "x6mEq1xqWkr730EKMD43N7gY227CZmpe";
-	public static AuthAPI auth = new AuthAPI(domain, clientId, clientKey);
+	static final String clientKey = "7q8Owacjr2xKCOE7YwRnUBPwG7LJmRP31abbFPR-3oS7FAJOCSddJEybtjHK6Wcf";
+	static final String domain = "rpaezbas.auth0.com";
+	static final String clientId = "x6mEq1xqWkr730EKMD43N7gY227CZmpe";
+	public final static AuthAPI auth = new AuthAPI(domain, clientId, clientKey);
 
-	public static boolean verifyTokenInHeader(String rawHeader) {
+	public static boolean verifyTokenInHeader(final String rawHeader) {
 
 		boolean Authorized;
 
@@ -21,7 +21,7 @@ public class AuthUtil {
 			// Split the header content, example: Bearer 7s64jhsdifu8324h2kfjsdfjojlskdjflkjsdlfkjsdflsdkjf....
 			String[] dividedHeader = rawHeader.split(" ");
 			// Get the token
-			String idToken = dividedHeader[1];
+			final String idToken = dividedHeader[1];
 
 			try {
 				Algorithm algorithm = Algorithm.HMAC256(AuthUtil.clientKey);
