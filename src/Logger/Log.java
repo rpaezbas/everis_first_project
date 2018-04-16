@@ -39,8 +39,4 @@ public class Log {
 		logger.setLevel(Level.INFO);
 
 	}
-	
-	public void destroy() {
-		
-	}
 }

@@ -19,13 +19,12 @@ public class RequestFilter implements ContainerRequestFilter {
 
 		Log.logger.info("Request: " + request.getHeaders().toString() + "/n");
 
-		//If the path doesnt match de regex, abort with 404
+		// If the path doesnt match de regex, abort with 404
 		String requestedPath = request.getUriInfo().getPath();
 		if (validate(requestedPath) == false) {
 			request.abortWith(Response.status(404).build());
 		}
 	}
-
 	public boolean validate(String path) {
 		return path.matches("cars((\\/\\d+)|\\/)?");
 	}

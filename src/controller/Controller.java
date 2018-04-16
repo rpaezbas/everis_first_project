@@ -116,7 +116,6 @@ public class Controller {
 		Transaction transaction = session.beginTransaction();
 
 		try {
-			// TODO reuse the getCar and getAllCars methods
 			Car car = (Car) session.get(Car.class, carId);
 			if (car != null) {
 				session.delete(car);

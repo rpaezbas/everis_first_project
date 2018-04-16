@@ -24,6 +24,6 @@ public class ResponseFilter implements ContainerResponseFilter {
 			responseContext.setStatus(200);
 		}
 		
-		Log.logger.info("Response: Status " + responseContext.getStatus() + " Headers: " + responseContext.getHeaders().toString());
+		Log.logger.info("Response: Status-" + responseContext.getStatus() + " Headers: " + responseContext.getHeaders().toString());
 	}
 }
