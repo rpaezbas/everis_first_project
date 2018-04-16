@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import Logger.Log;
 import entities.Car;
 import resources.HibernateUtil;
+import resources.Error;
 
 @Stateless
 public class Controller {
@@ -27,13 +28,14 @@ public class Controller {
 			if (cars != null) {
 				response = Response.status(200).entity(cars).build();
 			} else {
-				response = Response.status(404).build(); // Cambiar a repuesta 200 con json vacio
+				response = Response.status(404).entity(new Error(Error.nullResource)).build();
 			}
 		} catch (HibernateException hibernateEx) {
 			Log.logger.warning(hibernateEx.getMessage());
 			response = Response.status(500).build();
 			session.close();
 		}
+
 		return response;
 	}
 
@@ -44,7 +46,7 @@ public class Controller {
 			if (car != null) {
 				response = Response.status(200).entity(car).build();
 			} else {
-				response = Response.status(404).build(); // Cambiar error -Bad Request-
+				response = Response.status(404).entity(new Error(Error.nullResource)).build();
 			}
 		} catch (HibernateException hibernateEx) {
 			Log.logger.warning(hibernateEx.getMessage());
@@ -66,7 +68,7 @@ public class Controller {
 		} catch (HibernateException hibernateEx) {
 			try {
 				Log.logger.warning(hibernateEx.getMessage());
-				response = Response.status(500).build();
+				response = Response.status(500).entity(new Error(Error.invalidInput)).build();
 				transaction.rollback();
 				session.close();
 			} catch (HibernateException rollbackEx) {
@@ -85,10 +87,14 @@ public class Controller {
 
 		try {
 			Car deprecatedCar = (Car) session.get(Car.class, carId);
-			deprecatedCar.copyValuesFrom(updatedCar);
-			session.update(deprecatedCar);
-			session.getTransaction().commit();
-			response = Response.status(200).entity(updatedCar).build();
+			if (deprecatedCar != null) {
+				deprecatedCar.copyValuesFrom(updatedCar);
+				session.update(deprecatedCar);
+				session.getTransaction().commit();
+				response = Response.status(200).entity(updatedCar).build();
+			} else {
+				response = Response.status(404).entity(new Error(Error.nullResource)).build();
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				Log.logger.warning(hibernateEx.getMessage());

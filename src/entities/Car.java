@@ -136,7 +136,7 @@ public class Car {
 
 	@Override
 	public String toString() {
-		return "Brand:" + this.brand + " Country:" + this.country + " CreateAt:" + this.createdAt + " LastUpdated:"
+		return "Id:" +  this.id + " Brand:" + this.brand + " Country:" + this.country + " CreateAt:" + this.createdAt + " LastUpdated:"
 				+ this.lastUpdated + " registration: " + this.registration;
 	}
 

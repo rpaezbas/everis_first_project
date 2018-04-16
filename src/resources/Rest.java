@@ -1,9 +1,6 @@
 package resources;
 
-import java.io.IOException;
-
 import javax.ejb.EJB;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,10 +26,7 @@ public class Rest {
 	@EJB
 	Controller statelessEJB;
 
-	@Context
-	HttpServletRequest request;
-
-	// Get every car in table Car
+	//Get every car in table Car
 	@GET
 	@Path("/")
 	@Produces("application/json")
@@ -41,7 +35,7 @@ public class Rest {
 		Log.logger.info("GET: All cars");
 
 		if (AuthUtil.verifyTokenInHeader(authorization)) {
-			// recieves response from stateless EJB
+			//recieves response from stateless EJB
 			response = statelessEJB.getAllCars();
 		} else {
 			response = Response.status(401).build();
