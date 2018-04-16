@@ -5,6 +5,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
+import Logger.Log;
 
 //This class includes headers needed in http responses when requests come from any origin. It solves the typical CORS issues. When the server 
 //sends a response, it adds the different headers needed. Also it handles the preflight http response before the UPDATE,PUT and DELETE requests.
@@ -22,5 +23,8 @@ public class CorsFilter implements ContainerResponseFilter {
 		if (requestContext.getMethod().equals("OPTIONS")) {
 			responseContext.setStatus(200);
 		}
+		
+		//Log http request headers
+		Log.logger.info(requestContext.getHeaders().toString() + "/n");
 	}
 }

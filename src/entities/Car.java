@@ -12,29 +12,28 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Car")
 public class Car {
-	
+
 	public Car() {
 	}
-	
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "id",nullable = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", nullable = true)
 	private int id;
-	
-	@Column(name = "brand",nullable = false)
+
+	@Column(name = "brand", nullable = false)
 	private String brand;
 
-	@Column(name = "registration",nullable = false)
-	private Timestamp registration; 
-	
-	@Column(name = "country",nullable = false)
+	@Column(name = "registration", nullable = false)
+	private Timestamp registration;
+
+	@Column(name = "country", nullable = false)
 	private String country;
-	
-	@Column(name = "createdAt",nullable = false)
+
+	@Column(name = "createdAt", nullable = false)
 	private Timestamp createdAt;
-	
-	@Column(name = "lastUpdated",nullable = false)
+
+	@Column(name = "lastUpdated", nullable = false)
 	private Timestamp lastUpdated;
 
 	/**
@@ -45,7 +44,8 @@ public class Car {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
@@ -59,7 +59,8 @@ public class Car {
 	}
 
 	/**
-	 * @param brand the brand to set
+	 * @param brand
+	 *            the brand to set
 	 */
 	public void setBrand(String brand) {
 		this.brand = brand;
@@ -73,7 +74,8 @@ public class Car {
 	}
 
 	/**
-	 * @param registration the registration to set
+	 * @param registration
+	 *            the registration to set
 	 */
 	public void setRegistration(Timestamp registration) {
 		this.registration = registration;
@@ -87,7 +89,8 @@ public class Car {
 	}
 
 	/**
-	 * @param country the country to set
+	 * @param country
+	 *            the country to set
 	 */
 	public void setCountry(String country) {
 		this.country = country;
@@ -101,7 +104,8 @@ public class Car {
 	}
 
 	/**
-	 * @param createdAt the createdAt to set
+	 * @param createdAt
+	 *            the createdAt to set
 	 */
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
@@ -115,18 +119,25 @@ public class Car {
 	}
 
 	/**
-	 * @param lastUpdated the lastUpdated to set
+	 * @param lastUpdated
+	 *            the lastUpdated to set
 	 */
 	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
-	
+
 	public void copyValuesFrom(Car car) {
 		this.setBrand(car.getBrand());
 		this.setCountry(car.getCountry());
 		this.setCreatedAt(car.getCreatedAt());
 		this.setLastUpdated(car.getLastUpdated());
 		this.setRegistration(car.getRegistration());
+	}
+
+	@Override
+	public String toString() {
+		return "Brand:" + this.brand + " Country:" + this.country + " CreateAt:" + this.createdAt + " LastUpdated:"
+				+ this.lastUpdated + " registration: " + this.registration;
 	}
 
 }
