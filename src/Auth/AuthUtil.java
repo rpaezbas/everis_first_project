@@ -17,7 +17,7 @@ public class AuthUtil {
 
 		boolean Authorized;
 
-		if (rawHeader != null) {
+		if (rawHeader != null && rawHeader.length() > 0 ) {
 			// Split the header content, example: Bearer 7s64jhsdifu8324h2kfjsdfjojlskdjflkjsdlfkjsdflsdkjf....
 			String[] dividedHeader = rawHeader.split(" ");
 			// Get the token
