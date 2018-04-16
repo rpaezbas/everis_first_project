@@ -8,12 +8,18 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import Logger.Log;
+
 @Provider
 @PreMatching
 public class RequestFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext request) throws IOException {
+
+		Log.logger.info("Request: " + request.getHeaders().toString() + "/n");
+
+		//If the path doesnt match de regex, abort with 404
 		String requestedPath = request.getUriInfo().getPath();
 		if (validate(requestedPath) == false) {
 			request.abortWith(Response.status(404).build());

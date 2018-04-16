@@ -11,7 +11,7 @@ import Logger.Log;
 //sends a response, it adds the different headers needed. Also it handles the preflight http response before the UPDATE,PUT and DELETE requests.
 //The Provider annotation makes it been used by every Application
 @Provider
-public class CorsFilter implements ContainerResponseFilter {
+public class ResponseFilter implements ContainerResponseFilter {
 
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
 		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
@@ -24,7 +24,6 @@ public class CorsFilter implements ContainerResponseFilter {
 			responseContext.setStatus(200);
 		}
 		
-		//Log http request headers
-		Log.logger.info(requestContext.getHeaders().toString() + "/n");
+		Log.logger.info("Response: Status " + responseContext.getStatus() + " Headers: " + responseContext.getHeaders().toString());
 	}
 }

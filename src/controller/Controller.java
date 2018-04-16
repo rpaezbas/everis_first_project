@@ -118,9 +118,14 @@ public class Controller {
 		try {
 			// TODO reuse the getCar and getAllCars methods
 			Car car = (Car) session.get(Car.class, carId);
-			session.delete(car);
-			transaction.commit();
-			response = Response.status(204).entity(car).build();
+			if (car != null) {
+				session.delete(car);
+				transaction.commit();
+				response = Response.status(204).build();
+			}else {
+				transaction.commit();
+				response = Response.status(404).entity(new Error(Error.deleteNullResource)).build(); 
+			}
 		} catch (HibernateException hibernateEx) {
 			try {
 				Log.logger.warning(hibernateEx.getMessage());

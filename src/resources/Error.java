@@ -4,6 +4,7 @@ public class Error {
 
 	String message;
 	public final static String nullResource = "The requested resource doesn´t exist";
+	public final static String deleteNullResource = "The resource to be deleted doesn´t exist";
 	public final static String invalidInput = "The resource couldn´t be created. Please make sure every field has a correct name and value";
 	
 	public Error(String message) {

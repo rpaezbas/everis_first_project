@@ -26,16 +26,16 @@ public class Rest {
 	@EJB
 	Controller statelessEJB;
 
-	//Get every car in table Car
+	// Get every car in table Car
 	@GET
 	@Path("/")
 	@Produces("application/json")
 	public Response getAllCars(@HeaderParam("authorization") final String authorization) {
-		
+
 		Log.logger.info("GET: All cars");
 
 		if (AuthUtil.verifyTokenInHeader(authorization)) {
-			//recieves response from stateless EJB
+			// recieves response from stateless EJB
 			response = statelessEJB.getAllCars();
 		} else {
 			response = Response.status(401).build();
@@ -51,7 +51,7 @@ public class Rest {
 	@Produces("application/json")
 	public Response getCarbyId(@PathParam("carId") final int carId,
 			@HeaderParam("authorization") final String authorization) {
-		
+
 		Log.logger.info("GET: carId " + carId);
 
 		if (AuthUtil.verifyTokenInHeader(authorization)) {
@@ -89,7 +89,7 @@ public class Rest {
 	public Response updateCar(@PathParam("carId") final int carId, final Car updatedCar,
 			@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("PUT:" + updatedCar.toString());
+		Log.logger.info("PUT: " + updatedCar.toString());
 
 		if (AuthUtil.verifyTokenInHeader(authorization)) {
 			response = statelessEJB.updateCar(updatedCar, carId);
@@ -104,9 +104,10 @@ public class Rest {
 	@DELETE
 	@Path("/{carId}")
 	@Produces("application/json")
-	public Response deleteCarbyId(@PathParam("carId") int carId, @HeaderParam("authorization") final String authorization) {
+	public Response deleteCarbyId(@PathParam("carId") int carId,
+			@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("DELETE: carId" + carId);
+		Log.logger.info("DELETE: carId " + carId);
 
 		if (AuthUtil.verifyTokenInHeader(authorization)) {
 			response = statelessEJB.deleteCar(carId);
