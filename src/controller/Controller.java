@@ -17,8 +17,8 @@ import resources.Error;
 @Stateless
 public class Controller {
 
-	Response response;
-	Session session = HibernateUtil.getSessionFactory().openSession();
+	public Response response;
+	public Session session = HibernateUtil.getSessionFactory().openSession();
 
 	public Response getAllCars() {
 
@@ -99,7 +99,7 @@ public class Controller {
 			try {
 				Log.logger.warning(hibernateEx.getMessage());
 				response = Response.status(500).build();
-				transaction.rollback();
+				session.getTransaction().rollback();
 				session.close();
 			} catch (HibernateException rollbackEx) {
 				Log.logger.warning(rollbackEx.getMessage());
@@ -119,10 +119,10 @@ public class Controller {
 			Car car = (Car) session.get(Car.class, carId);
 			if (car != null) {
 				session.delete(car);
-				transaction.commit();
+				session.getTransaction().commit();
 				response = Response.status(204).build();
 			}else {
-				transaction.commit();
+				session.getTransaction().commit();
 				response = Response.status(404).entity(new Error(Error.deleteNullResource)).build(); 
 			}
 		} catch (HibernateException hibernateEx) {

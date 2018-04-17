@@ -19,10 +19,10 @@ import controller.Controller;
 @Path("/cars")
 public class Rest {
 
-	Response response;
+	public Response response;
 
 	@EJB
-	Controller statelessEJB;
+	public Controller statelessEJB;
 
 	// Get every car in table Car
 	@GET
