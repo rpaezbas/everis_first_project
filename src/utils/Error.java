@@ -1,4 +1,4 @@
-package resources;
+package utils;
 
 public class Error {
 

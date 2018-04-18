@@ -1,4 +1,4 @@
-package controller;
+package cars.boundary;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import Logger.Log;
-import entities.Car;
-import resources.HibernateUtil;
-import resources.Error;
+import cars.entity.Car;
+import utils.Error;
+import utils.HibernateUtil;
 
 @Stateless
 public class Controller {

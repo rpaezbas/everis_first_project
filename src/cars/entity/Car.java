@@ -1,4 +1,4 @@
-package entities;
+package cars.entity;
 
 import java.sql.Timestamp;
 
@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,9 +23,6 @@ public class Car {
 	@Column(name = "id", nullable = true)
 	private int id;
 
-	@Column(name = "brand", nullable = false)
-	private String brand;
-
 	@Column(name = "registration", nullable = false)
 	private Timestamp registration;
 
@@ -35,6 +34,12 @@ public class Car {
 
 	@Column(name = "lastUpdated", nullable = false)
 	private Timestamp lastUpdated;
+	
+
+	@Column(name="brand", nullable = false)
+	private String brand;
+
+	
 
 	/**
 	 * @return the id
@@ -54,17 +59,22 @@ public class Car {
 	/**
 	 * @return the brand
 	 */
+	
 	public String getBrand() {
 		return brand;
 	}
+	
 
 	/**
 	 * @param brand
 	 *            the brand to set
 	 */
+
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
+
+
 
 	/**
 	 * @return the registration

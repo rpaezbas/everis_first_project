@@ -18,10 +18,14 @@
 
 		<property name="show_sql">true</property>
 		
+		<property name="hbm2ddl.auto">update</property>
+		
 		<property name="hibernate.current_session_context_class">thread</property>
 		
+
 		<!-- Entidades a mapear -->
-		<mapping class="entities.Car" />
+		<mapping class="cars.entity.Car" />
+	
 		
 	</session-factory>
 </hibernate-configuration>

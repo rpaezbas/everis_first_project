@@ -1,4 +1,4 @@
-package resources;
+package cars.control;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -11,10 +11,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import entities.Car;
-import Auth.AuthUtil;
+
 import Logger.Log;
-import controller.Controller;
+import cars.boundary.Controller;
+import cars.entity.Car;
+import utils.AuthUtil;
 
 @Path("/cars")
 public class Rest {

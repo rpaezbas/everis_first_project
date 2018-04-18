@@ -1,4 +1,4 @@
-package resources;
+package application;
 
 import java.io.IOException;
 
@@ -22,10 +22,11 @@ public class RequestFilter implements ContainerRequestFilter {
 		// If the path doesnt match de regex, abort with 404
 		String requestedPath = request.getUriInfo().getPath();
 		if (validate(requestedPath) == false) {
+			System.out.println(requestedPath);
 			request.abortWith(Response.status(404).build());
 		}
 	}
 	public boolean validate(String path) {
-		return path.matches("cars((\\/\\d+)|\\/)?");
+		return path.matches("/cars((\\/\\d+)|\\/)?");
 	}
 }

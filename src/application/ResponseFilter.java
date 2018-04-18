@@ -1,4 +1,4 @@
-package resources;
+package application;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;

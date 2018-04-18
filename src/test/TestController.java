@@ -1,14 +1,16 @@
 package test;
 
 import junit.framework.*;
-import controller.Controller;
+
 import org.mockito.Mockito;
+
+import cars.boundary.Controller;
+import cars.entity.Car;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import entities.Car;
 
 import java.io.Serializable;
 import java.util.ArrayList;

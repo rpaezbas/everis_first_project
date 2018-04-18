@@ -1,4 +1,4 @@
-package Auth;
+package utils;
 
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.jwt.JWT;
