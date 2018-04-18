@@ -20,6 +20,7 @@ public class Controller {
 
 	public Response response;
 	public Session session = HibernateUtil.getSessionFactory().openSession();
+	public Transaction transaction = session.beginTransaction();
 
 	public Response getAllCars() {
 
@@ -59,8 +60,6 @@ public class Controller {
 	}
 
 	public Response postCar(final Car car) {
-
-		Transaction transaction = session.beginTransaction();
 		
 		//Check if brand exists and save in case it doesn´t
 		int brandId = car.getBrand().getId();
@@ -70,6 +69,7 @@ public class Controller {
 		if(brand == null) {
 			session.save(car.getBrand());
 		}
+		
 
 		try {
 			session.save(car);
@@ -93,7 +93,7 @@ public class Controller {
 
 	public Response updateCar(final Car updatedCar, final int carId) {
 
-		Transaction transaction = session.beginTransaction();
+	
 
 		try {
 			Car deprecatedCar = (Car) session.get(Car.class, carId);
@@ -123,7 +123,7 @@ public class Controller {
 
 	public Response deleteCar(final int carId) {
 
-		Transaction transaction = session.beginTransaction();
+
 
 		try {
 			Car car = (Car) session.get(Car.class, carId);

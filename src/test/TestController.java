@@ -4,6 +4,7 @@ import junit.framework.*;
 
 import org.mockito.Mockito;
 
+import brands.entity.Brand;
 import cars.boundary.Controller;
 import cars.entity.Car;
 
@@ -13,12 +14,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestController extends TestCase {
 
 	List<Car> mockCarList = new ArrayList<Car>();
+	Connection mockConnection = Mockito.mock(Connection.class);
 	Controller controller = new Controller();
 	
 	Car validCar = new Car();
@@ -26,9 +29,13 @@ public class TestController extends TestCase {
 
 	public void setUp() {
 		
+		//This removes a null exception pointer thrown by car.getBrand()
+		validCar.setBrand(new Brand());
+		invalidCar.setBrand(new Brand());
+		
 		//This is the object that makes the database connection
 		Session mockSession = Mockito.mock(Session.class);
-		controller.session = mockSession;
+		
 		
 		//GetAllCars mocks, since mockSession.getAll() returns a Query object, it also must be mocked
 		Query mockQuery = Mockito.mock(Query.class);
@@ -47,13 +54,18 @@ public class TestController extends TestCase {
 		// doesn´t use that object! )
 		Serializable mockSerializable = Mockito.mock(Serializable.class);
 		Mockito.when(mockSession.save(validCar)).thenReturn(mockSerializable);
-		Mockito.when(mockSession.save(invalidCar)).thenReturn(new HibernateException(""));
+		Mockito.when(mockSession.save(invalidCar)).thenThrow(new HibernateException(""));
 
 		// Mock commit, rollback and session.close
 		Transaction mockTransaction = Mockito.mock(Transaction.class);
 		Mockito.when(mockSession.getTransaction()).thenReturn(mockTransaction);
 		Mockito.doNothing().when(mockTransaction).commit();
 		Mockito.doNothing().when(mockTransaction).rollback();
+		
+		//Exchange real connection with fake-connection
+		controller.session = mockSession;
+		controller.transaction = mockTransaction;
+		
 	}
 
 	public void testControllerGetAllCars() {
@@ -68,7 +80,7 @@ public class TestController extends TestCase {
 
 	public void testControllerPostCar() {
 		assertEquals(controller.postCar(validCar).getStatus(), 201);
-		//assertEquals(controller.postCar(invalidCar).getStatus(), 500);
+		assertEquals(controller.postCar(invalidCar).getStatus(), 500);
 	}
 
 	public void testControllerUpdateCar() {

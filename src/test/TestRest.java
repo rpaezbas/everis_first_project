@@ -3,6 +3,7 @@ package test;
 import javax.ws.rs.core.Response;
 import org.mockito.Mockito;
 
+import brands.entity.Brand;
 import cars.boundary.Controller;
 import cars.control.Rest;
 import cars.entity.Car;
@@ -16,6 +17,8 @@ public class TestRest extends TestCase {
 	Car car = new Car();
 
 	public void setUp() {
+		
+		car.setBrand(new Brand());
 	
 		rest.statelessEJB = Mockito.mock(Controller.class);
 		Mockito.when(rest.statelessEJB.getAllCars()).thenReturn(Response.status(200).build());
