@@ -13,6 +13,7 @@ import Logger.Log;
 import cars.entity.Car;
 import utils.Error;
 import utils.HibernateUtil;
+import brands.entity.Brand;
 
 @Stateless
 public class Controller {
@@ -60,6 +61,15 @@ public class Controller {
 	public Response postCar(final Car car) {
 
 		Transaction transaction = session.beginTransaction();
+		
+		//Check if brand exists and save in case it doesn´t
+		int brandId = car.getBrand().getId();
+		Brand brand = (Brand) session.get(Brand.class, brandId);
+		
+		//Save the car brand in case it does not exist yet
+		if(brand == null) {
+			session.save(car.getBrand());
+		}
 
 		try {
 			session.save(car);

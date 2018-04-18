@@ -5,6 +5,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import brands.entity.Brand;
 import cars.entity.Car;
 
 public class HibernateUtil {
@@ -18,6 +19,7 @@ public class HibernateUtil {
 			Configuration configuration = new Configuration();
 			configuration.configure("persistence.xml");
 			configuration.addAnnotatedClass(Car.class);
+			configuration.addAnnotatedClass(Brand.class);
 			System.out.println("Hibernate Annotation Configuration loaded");
 
 			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()

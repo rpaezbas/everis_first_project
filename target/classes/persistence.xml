@@ -25,7 +25,7 @@
 
 		<!-- Entidades a mapear -->
 		<mapping class="cars.entity.Car" />
-	
+		<mapping class="brands.entity.Brand" />
 		
 	</session-factory>
 </hibernate-configuration>

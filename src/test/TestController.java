@@ -20,21 +20,24 @@ public class TestController extends TestCase {
 
 	List<Car> mockCarList = new ArrayList<Car>();
 	Controller controller = new Controller();
-	Session mockSession = Mockito.mock(Session.class);
+	
 	Car validCar = new Car();
 	Car invalidCar = new Car();
 
 	public void setUp() {
 		
+		//This is the object that makes the database connection
+		Session mockSession = Mockito.mock(Session.class);
 		controller.session = mockSession;
 		
-		//GetAllCars mocks
+		//GetAllCars mocks, since mockSession.getAll() returns a Query object, it also must be mocked
 		Query mockQuery = Mockito.mock(Query.class);
 		Mockito.when(mockSession.createQuery("from Car")).thenReturn(mockQuery);
 		Mockito.when(mockQuery.list()).thenReturn(mockCarList);
 
-		//Get and delete mocks
+		//Get, delete and update method mocks
 		Mockito.when(mockSession.get(Car.class, 1)).thenReturn(new Car());
+		Mockito.when(mockSession.get(Car.class, 0)).thenReturn(null);
 		Mockito.doNothing().when(mockSession).update(new Car());
 		Mockito.doNothing().when(mockSession).delete(new Car());
 		

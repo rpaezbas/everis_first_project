@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import brands.entity.Brand;
+
 @Entity
 @Table(name = "Car")
 public class Car {
@@ -34,12 +36,10 @@ public class Car {
 
 	@Column(name = "lastUpdated", nullable = false)
 	private Timestamp lastUpdated;
-	
 
-	@Column(name="brand", nullable = false)
-	private String brand;
-
-	
+	@ManyToOne
+	@JoinColumn(name = "brand")
+	private Brand brand;
 
 	/**
 	 * @return the id
@@ -59,22 +59,19 @@ public class Car {
 	/**
 	 * @return the brand
 	 */
-	
-	public String getBrand() {
+
+	public Brand getBrand() {
 		return brand;
 	}
-	
 
 	/**
 	 * @param brand
 	 *            the brand to set
 	 */
 
-	public void setBrand(String brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
-
-
 
 	/**
 	 * @return the registration
@@ -146,8 +143,8 @@ public class Car {
 
 	@Override
 	public String toString() {
-		return "Id:" +  this.id + " Brand:" + this.brand + " Country:" + this.country + " CreateAt:" + this.createdAt + " LastUpdated:"
-				+ this.lastUpdated + " registration: " + this.registration;
+		return "Id:" + this.id + " Brand:" + this.brand.toString() + " Country:" + this.country + " CreateAt:"
+				+ this.createdAt + " LastUpdated:" + this.lastUpdated + " registration: " + this.registration;
 	}
 
 }
