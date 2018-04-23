@@ -13,29 +13,33 @@ import Logger.Log;
 import cars.entity.Car;
 import utils.Error;
 import utils.HibernateUtil;
-import brands.entity.Brand;
 
 @Stateless
 public class Controller {
 
 	public Response response;
 	public Session session = HibernateUtil.getSessionFactory().openSession();
-	public Transaction transaction = session.beginTransaction();
 
 	public Response getAllCars() {
 
+		// This line needs to be be in every method because this class acts as a
+		// singleton that different calls will reuse. Even hen transaction is not used,
+		// it will begin the transaction, so it is mandatory to execute that function
+		
+		Transaction transaction = session.beginTransaction();
+
 		try {
-			// When the get query is finished, it closes the session automatically
 			List<Car> cars = session.createQuery("from Car").list();
+			session.getTransaction().commit();
 			if (cars != null) {
 				response = Response.status(200).entity(cars).build();
 			} else {
 				response = Response.status(404).entity(new Error(Error.nullResource)).build();
 			}
-		} catch (HibernateException hibernateEx) {
-			Log.logger.warning(hibernateEx.getMessage());
+		} catch (Exception e) {
+			Log.logger.warning(e.getMessage());
 			response = Response.status(500).build();
-			session.close();
+			session.getTransaction().commit();
 		}
 
 		return response;
@@ -43,79 +47,77 @@ public class Controller {
 
 	public Response getCar(final int carId) {
 
+		Transaction transaction = session.beginTransaction();
+
 		try {
 			Car car = (Car) session.get(Car.class, carId);
 			if (car != null) {
 				response = Response.status(200).entity(car).build();
 			} else {
-				response = Response.status(404).entity(new Error(Error.nullResource)).build();
+				response = Response.status(404).build();
 			}
-		} catch (HibernateException hibernateEx) {
-			Log.logger.warning(hibernateEx.getMessage());
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			Log.logger.warning(e.getMessage());
+			e.printStackTrace();
 			response = Response.status(500).build();
-			session.close();
+			session.getTransaction().commit();
 		}
 
 		return response;
 	}
 
+	// TODO fix response for invalid car
+
 	public Response postCar(final Car car) {
-		
-		//Check if brand exists and save in case it doesn´t
-		int brandId = car.getBrand().getId();
-		Brand brand = (Brand) session.get(Brand.class, brandId);
-		
-		//Save the car brand in case it does not exist yet
-		if(brand == null) {
-			session.save(car.getBrand());
-		}
-		
+
+		Transaction transaction = session.beginTransaction();
 
 		try {
 			session.save(car);
 			session.getTransaction().commit();
 			response = Response.status(201).entity(car).build();
-		} catch (HibernateException hibernateEx) {
-			try {
-				Log.logger.warning(hibernateEx.getMessage());
-				response = Response.status(500).entity(new Error(Error.invalidInput)).build();
-				transaction.rollback();
-				session.close();
-			} catch (HibernateException rollbackEx) {
-				Log.logger.warning(rollbackEx.getMessage());
-				response = Response.status(500).build();
-				session.close();
-			}
+		} catch (Exception e) {
+			session.clear();
+			response = Response.status(400).build();
+			session.getTransaction().commit();
+			System.out.println("Alow!");
 		}
 
 		return response;
 	}
 
-	public Response updateCar(final Car updatedCar, final int carId) {
+	public Response updateCar(final Car newData, final int carId) {
 
-	
+		Car carToUpdate = null;
+		Transaction transaction = session.beginTransaction();
 
 		try {
-			Car deprecatedCar = (Car) session.get(Car.class, carId);
-			if (deprecatedCar != null) {
-				deprecatedCar.copyValuesFrom(updatedCar);
-				session.update(deprecatedCar);
-				session.getTransaction().commit();
-				response = Response.status(200).entity(updatedCar).build();
-			} else {
-				response = Response.status(404).entity(new Error(Error.nullResource)).build();
-			}
-		} catch (HibernateException hibernateEx) {
+			carToUpdate = (Car) session.get(Car.class, carId);
+		} catch (Exception e) {
+			Log.logger.warning(e.getMessage());
+			e.printStackTrace();
+			response = Response.status(500).build();
+			session.clear();
+		}
+
+		if (carToUpdate != null) {
+			carToUpdate.copyValuesFrom(newData);
+
 			try {
-				Log.logger.warning(hibernateEx.getMessage());
-				response = Response.status(500).build();
+				session.update(carToUpdate);
+				session.getTransaction().commit();
+				response = Response.status(200).build();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.logger.warning(e.getMessage());
+				response = Response.status(400).build();
 				session.getTransaction().rollback();
-				session.close();
-			} catch (HibernateException rollbackEx) {
-				Log.logger.warning(rollbackEx.getMessage());
-				response = Response.status(500).build();
-				session.close();
+				session.clear();
 			}
+		} else {
+			response = Response.status(404).build();
+			session.getTransaction().commit();
 		}
 
 		return response;
@@ -123,29 +125,23 @@ public class Controller {
 
 	public Response deleteCar(final int carId) {
 
+		Transaction transaction = session.beginTransaction();
 
-
-		try {
-			Car car = (Car) session.get(Car.class, carId);
-			if (car != null) {
+		Car car = (Car) session.get(Car.class, carId);
+		if (car != null) {
+			try {
 				session.delete(car);
 				session.getTransaction().commit();
 				response = Response.status(204).build();
-			}else {
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.logger.warning(e.getMessage());
+				response = Response.status(404).entity((new Error(Error.deleteNullResource))).build();
 				session.getTransaction().commit();
-				response = Response.status(404).entity(new Error(Error.deleteNullResource)).build(); 
 			}
-		} catch (HibernateException hibernateEx) {
-			try {
-				Log.logger.warning(hibernateEx.getMessage());
-				response = Response.status(500).build();
-				transaction.rollback();
-				session.close();
-			} catch (HibernateException rollbackEx) {
-				Log.logger.warning(rollbackEx.getMessage());
-				response = Response.status(500).build();
-				session.close();
-			}
+		}else {
+			response = response.status(404).build();
+			session.getTransaction().commit();
 		}
 
 		return response;

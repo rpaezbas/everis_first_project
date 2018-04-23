@@ -1,10 +1,13 @@
 package utils;
 
+
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
+import Logger.Log;
 
 public class AuthUtil {
 
@@ -12,32 +15,66 @@ public class AuthUtil {
 	static final String domain = "rpaezbas.auth0.com";
 	static final String clientId = "x6mEq1xqWkr730EKMD43N7gY227CZmpe";
 	public final static AuthAPI auth = new AuthAPI(domain, clientId, clientKey);
+	public final static String requiredIssuer = "https://rpaezbas.auth0.com/";
+	public final static String metadataClaim = "https://rp.com/user_metadata";
 
-	public static boolean verifyTokenInHeader(final String rawHeader) {
+	// Since the token comes preceded by the word Bearer it has to be divided
+	public static String extractTokenFromHeader(String rawHeader) {
 
-		boolean Authorized;
-
-		if (rawHeader != null && rawHeader.length() > 0 ) {
-			// Split the header content, example: Bearer 7s64jhsdifu8324h2kfjsdfjojlskdjflkjsdlfkjsdflsdkjf....
+		String idToken = null;
+		if (rawHeader != null && rawHeader.length() > 0) {
 			String[] dividedHeader = rawHeader.split(" ");
-			// Get the token
-			final String idToken = dividedHeader[1];
+			idToken = dividedHeader[1];
+		}
+		return idToken;
+	}
 
-			try {
-				Algorithm algorithm = Algorithm.HMAC256(AuthUtil.clientKey);
-				JWTVerifier verifier = JWT.require(algorithm).withIssuer("https://rpaezbas.auth0.com/").build();
-				DecodedJWT jwt = verifier.verify(idToken);
-				Authorized = true;
-			} catch (Exception exception) {
-				exception.printStackTrace();
-				Authorized = false;
+	// Decode the token and verify that the signature is right
+	public static DecodedJWT getDecodedJWT(String idToken) throws Exception {
+		Algorithm algorithm = Algorithm.HMAC256(AuthUtil.clientKey);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer(requiredIssuer).build();
+		return verifier.verify(idToken);
+	}
+
+	// Extract the metadata from the token
+	public static String getTokenPermissions(final String idToken) throws Exception {
+		String rol = null;
+		if (idToken != null) {
+			DecodedJWT decodedJwt = getDecodedJWT(idToken);
+			rol = decodedJwt.getClaims().get(metadataClaim).asMap().get("rol").toString(); // The claim is a key-value
+																							// // list
+		}
+		return rol;
+	}
+
+	public static boolean verifyRoleInToken(String rawHeader, String requiredRole) {
+
+		boolean authorized = false;
+		String idToken = extractTokenFromHeader(rawHeader);
+
+		try {
+			// If the token doesnt verify, this will throw an exception, and authorized will
+			// be false
+			String rol = getTokenPermissions(idToken);
+
+			switch (requiredRole) {
+			case "user":
+				if (rol.equals("user") || rol.equals("admin")) {
+					authorized = true;
+				}
+				break;
+			case "admin":
+				if (rol.equals("admin")) {
+					authorized = true;
+				}
+				break;
 			}
 
-			// If header is null there is not idToken
-		} else {
-			Authorized = false;
+		} catch (Exception e) {
+			Log.logger.info(e.getMessage());
 		}
 
-		return Authorized;
+		return authorized;
 	}
+
 }

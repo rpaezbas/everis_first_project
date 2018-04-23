@@ -139,6 +139,7 @@ public class Car {
 		this.setCreatedAt(car.getCreatedAt());
 		this.setLastUpdated(car.getLastUpdated());
 		this.setRegistration(car.getRegistration());
+		this.setBrand(car.getBrand());
 	}
 
 	@Override

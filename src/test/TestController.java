@@ -64,7 +64,7 @@ public class TestController extends TestCase {
 		
 		//Exchange real connection with fake-connection
 		controller.session = mockSession;
-		controller.transaction = mockTransaction;
+		//controller.transaction = mockTransaction;
 		
 	}
 
@@ -80,7 +80,7 @@ public class TestController extends TestCase {
 
 	public void testControllerPostCar() {
 		assertEquals(controller.postCar(validCar).getStatus(), 201);
-		assertEquals(controller.postCar(invalidCar).getStatus(), 500);
+		assertEquals(controller.postCar(invalidCar).getStatus(), 400);
 	}
 
 	public void testControllerUpdateCar() {

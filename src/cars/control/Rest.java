@@ -20,7 +20,7 @@ import utils.AuthUtil;
 @Path("/cars")
 public class Rest {
 
-	public Response response;
+	Response response;
 
 	@EJB
 	public Controller statelessEJB;
@@ -33,8 +33,7 @@ public class Rest {
 
 		Log.logger.info("GET: All cars");
 
-		if (AuthUtil.verifyTokenInHeader(authorization)) {
-			// recieves response from stateless EJB
+		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
 			response = statelessEJB.getAllCars();
 		} else {
 			response = Response.status(401).build();
@@ -53,7 +52,7 @@ public class Rest {
 
 		Log.logger.info("GET: carId " + carId);
 
-		if (AuthUtil.verifyTokenInHeader(authorization)) {
+		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
 			response = statelessEJB.getCar(carId);
 		} else {
 			response = Response.status(401).build();
@@ -68,10 +67,11 @@ public class Rest {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {
+		
+		System.out.println(car.getClass().getName() +  "!!!!!!!!!!!!");
 
-		Log.logger.info("POST:" + car.toString());
 
-		if (AuthUtil.verifyTokenInHeader(authorization)) {
+		if (AuthUtil.verifyRoleInToken(authorization, "admin")) {
 			response = statelessEJB.postCar(car);
 		} else {
 			response = Response.status(401).build();
@@ -88,9 +88,7 @@ public class Rest {
 	public Response updateCar(@PathParam("carId") final int carId, final Car updatedCar,
 			@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("PUT: " + updatedCar.toString());
-
-		if (AuthUtil.verifyTokenInHeader(authorization)) {
+		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
 			response = statelessEJB.updateCar(updatedCar, carId);
 		} else {
 			response = Response.status(401).build();
@@ -108,7 +106,7 @@ public class Rest {
 
 		Log.logger.info("DELETE: carId " + carId);
 
-		if (AuthUtil.verifyTokenInHeader(authorization)) {
+		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
 			response = statelessEJB.deleteCar(carId);
 		} else {
 			response = Response.status(401).build();

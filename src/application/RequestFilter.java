@@ -23,7 +23,7 @@ public class RequestFilter implements ContainerRequestFilter {
 		String requestedPath = request.getUriInfo().getPath();
 		if (validate(requestedPath) == false) {
 			System.out.println(requestedPath);
-			request.abortWith(Response.status(404).build());
+			request.abortWith(Response.status(400).build());
 		}
 	}
 	public boolean validate(String path) {
