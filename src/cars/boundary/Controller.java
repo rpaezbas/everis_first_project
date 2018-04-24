@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -78,10 +77,11 @@ public class Controller {
 			session.getTransaction().commit();
 			response = Response.status(201).entity(car).build();
 		} catch (Exception e) {
+			//Removes the bad query
 			session.clear();
 			response = Response.status(400).build();
+			//Do an empty commit in order to avoid nested transactions
 			session.getTransaction().commit();
-			System.out.println("Alow!");
 		}
 
 		return response;
@@ -140,7 +140,7 @@ public class Controller {
 				session.getTransaction().commit();
 			}
 		}else {
-			response = response.status(404).build();
+			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}
 
