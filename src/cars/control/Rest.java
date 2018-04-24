@@ -1,6 +1,7 @@
 package cars.control;
 
 import javax.ejb.EJB;
+import javax.interceptor.Interceptors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,8 +16,10 @@ import javax.ws.rs.core.Response;
 import Logger.Log;
 import cars.boundary.Controller;
 import cars.entity.Car;
+import interceptor.Interceptor;
 import utils.AuthUtil;
 
+@Interceptors(Interceptor.class)
 @Path("/cars")
 public class Rest {
 

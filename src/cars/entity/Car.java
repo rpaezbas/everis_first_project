@@ -2,6 +2,7 @@ package cars.entity;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 import brands.entity.Brand;
 
+@Cacheable(true)
 @Entity
 @Table(name = "Car")
 public class Car {

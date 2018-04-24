@@ -1,11 +1,3 @@
-/resources/
-/test/
-/cars/
-/boundary/
-/asdas/
-/controller/
-/entities/
-/utils/
-/Auth/
-/application/
-/brands/
+/jmsClient/
+/Jms.class
+/jms/
