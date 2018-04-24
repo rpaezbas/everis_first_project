@@ -7,10 +7,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-
 @Singleton
 public class Consumer {
-	public Consumer() throws JMSException {
+	
+	  Consumer() throws JMSException {
 		
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
         connectionFactory.setBrokerURL("tcp://localhost:61616");
