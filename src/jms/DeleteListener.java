@@ -5,6 +5,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import cars.boundary.Controller;
+import Logger.Log;
 
 class DeleteListener implements MessageListener {
 
@@ -16,8 +17,10 @@ class DeleteListener implements MessageListener {
 		try {
 			int carToDeleteId = Integer.parseInt(textMessage.getText());
 			crudController.deleteCar(carToDeleteId);
+			Log.logger.info("Received message: " + textMessage.getText());
+			Sender.sendMesg(textMessage.getText(), "Delete");
 		} catch (JMSException e) {
-			e.printStackTrace();
+			Log.logger.warning(e.getMessage());
 		}
 	}
 	

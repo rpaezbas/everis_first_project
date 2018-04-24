@@ -26,5 +26,8 @@ public class Consumer {
         MessageConsumer postConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Post'");
         postConsumer.setMessageListener(new PostListener());
         
+        MessageConsumer updateConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Update'");
+        updateConsumer.setMessageListener(new UpdateListener());
+        
     }
 }
