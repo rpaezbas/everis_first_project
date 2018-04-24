@@ -19,8 +19,12 @@ public class Consumer {
         connection.start();
         
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        MessageConsumer consumer = session.createConsumer(session.createQueue("activeMqQueue"));
-        consumer.setMessageListener(new Listener());
+        
+        MessageConsumer deleteConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Delete'"); //Message selector
+        deleteConsumer.setMessageListener(new DeleteListener());
+        
+        MessageConsumer postConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Post'");
+        postConsumer.setMessageListener(new PostListener());
         
     }
 }
