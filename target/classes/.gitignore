@@ -1,2 +1,9 @@
+/Logger/
+/application/
+/brands/
 /cars/
+/interceptor/
 /jms/
+/persistence.xml
+/test/
+/utils/

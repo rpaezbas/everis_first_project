@@ -7,27 +7,49 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+
+import Logger.Log;
+import jms.listeners.DeleteListener;
+import jms.listeners.PostListener;
+import jms.listeners.UpdateListener;
+
 @Singleton
 public class Consumer {
-	
-	  Consumer() throws JMSException {
-		
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-        connectionFactory.setBrokerURL("tcp://localhost:61616");
 
-        Connection connection = connectionFactory.createConnection();
-        connection.start();
-        
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        
-        MessageConsumer deleteConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Delete'"); //Message selector
-        deleteConsumer.setMessageListener(new DeleteListener());
-        
-        MessageConsumer postConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Post'");
-        postConsumer.setMessageListener(new PostListener());
-        
-        MessageConsumer updateConsumer = session.createConsumer(session.createQueue("activeMqQueue"),"JMSType = 'Update'");
-        updateConsumer.setMessageListener(new UpdateListener());
-        
-    }
+	Session session;
+	Connection connection;
+	ActiveMQConnectionFactory connectionFactory;
+	MessageConsumer deleteConsumer;
+	MessageConsumer postConsumer;
+	MessageConsumer updateConsumer;
+
+	Consumer() throws JMSException {
+
+		connectionFactory = new ActiveMQConnectionFactory();
+		connectionFactory.setBrokerURL("tcp://localhost:61616");
+
+		connection = connectionFactory.createConnection();
+		connection.start();
+
+		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+		deleteConsumer = session.createConsumer(session.createQueue("activeMqQueue"), "JMSType = 'Delete'"); // Message selector
+																												
+		deleteConsumer.setMessageListener(new DeleteListener());
+
+		postConsumer = session.createConsumer(session.createQueue("activeMqQueue"), "JMSType = 'Post'");
+		postConsumer.setMessageListener(new PostListener());
+
+		updateConsumer = session.createConsumer(session.createQueue("activeMqQueue"), "JMSType = 'Update'");
+		updateConsumer.setMessageListener(new UpdateListener());
+
+	}
+
+	public void destroy() {
+		try {
+			session.close();
+		} catch (JMSException e) {
+			Log.logger.warning(e.getMessage());
+		}
+	}
 }

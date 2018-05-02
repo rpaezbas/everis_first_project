@@ -18,20 +18,18 @@ public class Controller {
 
 	public Response response;
 	public Session session = HibernateUtil.getSessionFactory().openSession();
+	Transaction transaction = session.beginTransaction();
 
 	public Response getAllCars() {
 
-		// This line needs to be be in every method because this class acts as a
-		// singleton that different calls will reuse. Even hen transaction is not used,
-		// it will begin the transaction, so it is mandatory to execute that function
-		
-		Transaction transaction = session.beginTransaction();
-
 		try {
-			List<Car> cars = session.createQuery("from Car").list();
+			// Since the casting of every single car is not correct, a possible solution is
+			// creating an array that gets added has the right casting
+			List<Car> listCars = session.createQuery("from Car").list();
+			Car[] arrayCar = listCars.toArray(new Car[listCars.size()]);
 			session.getTransaction().commit();
-			if (cars != null) {
-				response = Response.status(200).entity(cars).build();
+			if (arrayCar.length != 0) {
+				response = Response.status(200).entity(arrayCar).build();
 			} else {
 				response = Response.status(404).entity(new Error(Error.nullResource)).build();
 			}
@@ -46,7 +44,6 @@ public class Controller {
 
 	public Response getCar(final int carId) {
 
-		Transaction transaction = session.beginTransaction();
 
 		try {
 			Car car = (Car) session.get(Car.class, carId);
@@ -70,17 +67,16 @@ public class Controller {
 
 	public Response postCar(final Car car) {
 
-		Transaction transaction = session.beginTransaction();
 
 		try {
 			session.save(car);
 			session.getTransaction().commit();
 			response = Response.status(201).entity(car).build();
 		} catch (Exception e) {
-			//Removes the bad query
+			// Removes the bad query
 			session.clear();
 			response = Response.status(400).build();
-			//Do an empty commit in order to avoid nested transactions
+			// Do an empty commit in order to avoid nested transactions
 			session.getTransaction().commit();
 		}
 
@@ -90,7 +86,6 @@ public class Controller {
 	public Response updateCar(final Car newData, final int carId) {
 
 		Car carToUpdate = null;
-		Transaction transaction = session.beginTransaction();
 
 		try {
 			carToUpdate = (Car) session.get(Car.class, carId);
@@ -125,7 +120,6 @@ public class Controller {
 
 	public Response deleteCar(final int carId) {
 
-		Transaction transaction = session.beginTransaction();
 
 		Car car = (Car) session.get(Car.class, carId);
 		if (car != null) {
@@ -139,7 +133,7 @@ public class Controller {
 				response = Response.status(404).entity((new Error(Error.deleteNullResource))).build();
 				session.getTransaction().commit();
 			}
-		}else {
+		} else {
 			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}

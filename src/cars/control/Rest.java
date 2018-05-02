@@ -25,8 +25,8 @@ public class Rest {
 
 	Response response;
 
-	@EJB
-	public Controller statelessEJB;
+//	@EJB
+	public Controller statelessEJB = new Controller();
 
 	// Get every car in table Car
 	@GET
@@ -69,10 +69,7 @@ public class Rest {
 	@Path("/")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {
-		
-		System.out.println(car.getClass().getName() +  "!!!!!!!!!!!!");
-
+	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {		
 
 		if (AuthUtil.verifyRoleInToken(authorization, "admin")) {
 			response = statelessEJB.postCar(car);
