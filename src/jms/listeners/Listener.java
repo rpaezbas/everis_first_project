@@ -1,7 +1,10 @@
 package jms.listeners;
 
+import javax.ejb.EJB;
+
 import cars.boundary.Controller;
 
 public class Listener {
-	public Controller crudController = new Controller();
+	@EJB 
+	Controller crudController = new Controller();
 }

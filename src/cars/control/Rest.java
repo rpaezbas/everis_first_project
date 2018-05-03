@@ -25,8 +25,8 @@ public class Rest {
 
 	Response response;
 
-//	@EJB
-	public Controller statelessEJB = new Controller();
+	@EJB
+	public Controller statelessEJB; //TODO change name
 
 	// Get every car in table Car
 	@GET

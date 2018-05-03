@@ -24,11 +24,11 @@ public class Controller {
 
 		try {
 			// Since the casting of every single car is not correct, a possible solution is
-			// creating an array that gets added has the right casting
+			// creating an array where every car that gets added has the right casting
 			List<Car> listCars = session.createQuery("from Car").list();
 			Car[] arrayCar = listCars.toArray(new Car[listCars.size()]);
 			session.getTransaction().commit();
-			if (arrayCar.length != 0) {
+			if (arrayCar.length > 0) {
 				response = Response.status(200).entity(arrayCar).build();
 			} else {
 				response = Response.status(404).entity(new Error(Error.nullResource)).build();
@@ -62,8 +62,6 @@ public class Controller {
 
 		return response;
 	}
-
-	// TODO fix response for invalid car
 
 	public Response postCar(final Car car) {
 

@@ -11,8 +11,8 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class Sender {
-	// URL of the JMS server. DEFAULT_BROKER_URL will just mean that JMS server is
-	// on localhost, URL is : tcp://localhost:61616"
+	
+	// URL of the JMS server.
 	private static String url ="tcp://localhost:61616";
 	// Queue Name.
 	private static String subject = "pasiveMqQueue";

@@ -32,6 +32,9 @@ public class TestController extends TestCase {
 		//This removes a null exception pointer thrown by car.getBrand()
 		validCar.setBrand(new Brand());
 		invalidCar.setBrand(new Brand());
+	
+		//Add something to the mock list that returns de mock session
+		mockCarList.add(validCar);
 		
 		//This is the object that makes the database connection
 		Session mockSession = Mockito.mock(Session.class);

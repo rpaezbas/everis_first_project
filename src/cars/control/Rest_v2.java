@@ -26,6 +26,19 @@ public class Rest_v2 {
 	@EJB
 	Controller statelessEJB = new Controller();
 
+	// This function wraps the EJB call with a preavious verification and returns
+	// its response
+	public Response verifyAndCallEJB(String rol, String authorization, EjbCall lambda) {
+
+		if (AuthUtil.verifyRoleInToken(authorization, rol)) {
+			response = lambda.call();
+		} else {
+			response = Response.status(401).build();
+		}
+
+		return response;
+	}
+
 	@GET
 	@Path("/")
 	@Produces("application/json")
@@ -74,19 +87,6 @@ public class Rest_v2 {
 
 		return verifyAndCallEJB("user", authorization, () -> statelessEJB.deleteCar(carId));
 
-	}
-
-	// This function wraps the EJB call with a preavious verification and returns
-	// its response
-	public Response verifyAndCallEJB(String rol, String authorization, EjbCall ejbCall) {
-
-		if (AuthUtil.verifyRoleInToken(authorization, rol)) {
-			response = ejbCall.call();
-		} else {
-			response = Response.status(401).build();
-		}
-
-		return response;
 	}
 
 }
