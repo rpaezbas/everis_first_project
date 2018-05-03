@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-
 import Logger.Log;
 import cars.boundary.Controller;
 import cars.entity.Car;
@@ -76,7 +75,7 @@ public class Rest {
 	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {		
 		
 		Log.logger.info("Enters Rest.postCar");
-
+		
 		if (AuthUtil.verifyRoleInToken(authorization, "admin")) {
 			response = carsDAO.postCar(car);
 		} else {

@@ -11,8 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 import brands.entity.Brand;
+import validations.ValidDate;
 
 @Cacheable(true)
 @Entity
@@ -27,16 +32,24 @@ public class Car {
 	@Column(name = "id", nullable = true)
 	private int id;
 
-	@Column(name = "registration", nullable = false)
+	//This is a custom validation see the package ultils.validations
+	@ValidDate
+	@NotNull(message = "The value for registration cannot be empty.")
+	@Column(name = "registration")
 	private Timestamp registration;
 
-	@Column(name = "country", nullable = false)
+	@NotBlank(message = "The value for country cannot be null or empty.")
+	@NotEmpty(message = "The value for country cannot be null or whitespace.")
+	@Column(name = "country")
 	private String country;
 
-	@Column(name = "createdAt", nullable = false)
+	@NotNull(message = "The value for createdAt cannot be empty.")
+	@Past(message = "The date for the propierty createdAt must be preavious than today's date.")
+	@Column(name = "createdAt")
 	private Timestamp createdAt;
 
-	@Column(name = "lastUpdated", nullable = false)
+	@NotNull(message = "The value for lastUpdated cannot be empty.")
+	@Column(name = "lastUpdated")
 	private Timestamp lastUpdated;
 
 	@ManyToOne

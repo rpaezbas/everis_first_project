@@ -1,27 +1,28 @@
 package cars.boundary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import Logger.Log;
 import cars.entity.Car;
 import utils.Error;
 import utils.HibernateUtil;
+import utils.ValidatorUtil;
 
 @Stateless
 public class Controller {
 
 	public Response response;
 	public Session session = HibernateUtil.getSessionFactory().openSession();
-	Transaction transaction = session.beginTransaction();
 
 	public Response getAllCars() {
-		
+
+		Transaction transaction = session.beginTransaction();
+
 		Log.logger.info("Enters Controller.getAllCars");
 
 		try {
@@ -40,14 +41,16 @@ public class Controller {
 			response = Response.status(500).build();
 			session.getTransaction().commit();
 		}
-		
+
 		Log.logger.info("Exits Controller.getAllCars");
 
 		return response;
 	}
 
 	public Response getCar(final int carId) {
-		
+
+		Transaction transaction = session.beginTransaction();
+
 		Log.logger.info("Enters Controller.getCar");
 
 		try {
@@ -64,36 +67,47 @@ public class Controller {
 			response = Response.status(500).build();
 			session.getTransaction().commit();
 		}
-		
+
 		Log.logger.info("Exits Controller.getCar");
 
 		return response;
 	}
 
 	public Response postCar(final Car car) {
-		
+
+		Transaction transaction = session.beginTransaction();
+
 		Log.logger.info("Enters Controller.postCar");
 
+		ArrayList<String> violantionMessages = ValidatorUtil.validate(car);
 
-		try {
-			session.save(car);
-			session.getTransaction().commit();
-			response = Response.status(201).entity(car).build();
-		} catch (Exception e) {
-			// Removes the bad query
+		if (violantionMessages.size() > 0) {
+			response = Response.status(400).entity(violantionMessages).build();
 			session.clear();
-			response = Response.status(400).build();
-			// Do an empty commit in order to avoid nested transactions
 			session.getTransaction().commit();
+		} else {
+			try {
+				session.save(car);
+				session.getTransaction().commit();
+				response = Response.status(201).entity(car).build();
+			} catch (Exception e) {
+				// Removes the bad query
+				session.clear();
+				response = Response.status(400).build();
+				// Do an empty commit in order to avoid nested transactions
+				session.getTransaction().commit();
+			}
 		}
-		
+
 		Log.logger.info("Exits Controller.postCar");
 
 		return response;
 	}
 
 	public Response updateCar(final Car newData, final int carId) {
-		
+
+		Transaction transaction = session.beginTransaction();
+
 		Log.logger.info("Enters Controller.updateCar");
 
 		Car carToUpdate = null;
@@ -125,16 +139,17 @@ public class Controller {
 			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}
-		
+
 		Log.logger.info("Exits Controller.updateCar");
 
 		return response;
 	}
 
 	public Response deleteCar(final int carId) {
-		
+
 		Log.logger.info("Enters Controller.deleteCar");
 
+		Transaction transaction = session.beginTransaction();
 
 		Car car = (Car) session.get(Car.class, carId);
 		if (car != null) {
@@ -152,7 +167,7 @@ public class Controller {
 			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}
-		
+
 		Log.logger.info("Exits Controller.deleteCar");
 
 		return response;
