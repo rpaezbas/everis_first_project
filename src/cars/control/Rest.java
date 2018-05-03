@@ -26,7 +26,7 @@ public class Rest {
 	Response response;
 
 	@EJB
-	public Controller statelessEJB; //TODO change name
+	public Controller carsDAO;
 
 	// Get every car in table Car
 	@GET
@@ -34,13 +34,15 @@ public class Rest {
 	@Produces("application/json")
 	public Response getAllCars(@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("GET: All cars");
+		Log.logger.info("Enters Rest.getAllCars");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = statelessEJB.getAllCars();
+			response = carsDAO.getAllCars();
 		} else {
 			response = Response.status(401).build();
 		}
+		
+		Log.logger.info("Exits Rest.getAllCars");
 
 		return response;
 
@@ -53,13 +55,15 @@ public class Rest {
 	public Response getCarbyId(@PathParam("carId") final int carId,
 			@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("GET: carId " + carId);
+		Log.logger.info("Enters Rest.getCarbyId");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = statelessEJB.getCar(carId);
+			response = carsDAO.getCar(carId);
 		} else {
 			response = Response.status(401).build();
 		}
+		
+		Log.logger.info("Exits Rest.getCarbyId");
 
 		return response;
 	}
@@ -70,12 +74,16 @@ public class Rest {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response postCar(final Car car, @HeaderParam("authorization") final String authorization) {		
+		
+		Log.logger.info("Enters Rest.postCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "admin")) {
-			response = statelessEJB.postCar(car);
+			response = carsDAO.postCar(car);
 		} else {
 			response = Response.status(401).build();
 		}
+		
+		Log.logger.info("Exits Rest.postCar");
 
 		return response;
 	}
@@ -87,12 +95,16 @@ public class Rest {
 	@Produces("application/json")
 	public Response updateCar(@PathParam("carId") final int carId, final Car updatedCar,
 			@HeaderParam("authorization") final String authorization) {
+		
+		Log.logger.info("Enters Rest.updateCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = statelessEJB.updateCar(updatedCar, carId);
+			response = carsDAO.updateCar(updatedCar, carId);
 		} else {
 			response = Response.status(401).build();
 		}
+		
+		Log.logger.info("Exits Rest.updateCar");
 
 		return response;
 	}
@@ -104,13 +116,15 @@ public class Rest {
 	public Response deleteCarbyId(@PathParam("carId") int carId,
 			@HeaderParam("authorization") final String authorization) {
 
-		Log.logger.info("DELETE: carId " + carId);
+		Log.logger.info("Enters Rest.deleteCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = statelessEJB.deleteCar(carId);
+			response = carsDAO.deleteCar(carId);
 		} else {
 			response = Response.status(401).build();
 		}
+		
+		Log.logger.info("Exits Rest.deleteCar");
 
 		return response;
 	}

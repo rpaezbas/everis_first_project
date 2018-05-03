@@ -30,6 +30,7 @@ public class RequestFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext request) throws IOException {
 
+		Log.logger.info("Enters RequestFilter.filter");
 		Log.logger.info("Request: " + request.getHeaders().toString() + "/n");
 
 		// If the path doesnt match de regex, abort with 404
@@ -38,6 +39,8 @@ public class RequestFilter implements ContainerRequestFilter {
 			System.out.println(requestedPath);
 			request.abortWith(Response.status(400).build());
 		}
+		
+		Log.logger.info("Exits RequestFilter.filter");
 	}
 
 	/**
@@ -48,8 +51,8 @@ public class RequestFilter implements ContainerRequestFilter {
 	 * @return True if the path is valid.
 	 * 
 	 */
-
 	public boolean validate(String path) {
+
 		return path.matches("/cars((\\/\\d+)|\\/)?") || path.matches("/carsjms");
 	}
 }

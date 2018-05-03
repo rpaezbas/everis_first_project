@@ -20,13 +20,13 @@ public class TestRest extends TestCase {
 	public void setUp() {
 
 		car.setBrand(new Brand());
-		rest.statelessEJB = Mockito.mock(Controller.class);
-		Mockito.when(rest.statelessEJB.getAllCars()).thenReturn(Response.status(200).build());
-		Mockito.when(rest.statelessEJB.getCar(1)).thenReturn(Response.status(200).build());
-		Mockito.when(rest.statelessEJB.postCar(car)).thenReturn(Response.status(201).build());
-		Mockito.when(rest.statelessEJB.updateCar(car, 1)).thenReturn(Response.status(200).build());
-		Mockito.when(rest.statelessEJB.deleteCar(1)).thenReturn(Response.status(204).build());
-		Mockito.when(rest.statelessEJB.deleteCar(0)).thenReturn(Response.status(404).build());
+		rest.carsDAO = Mockito.mock(Controller.class);
+		Mockito.when(rest.carsDAO.getAllCars()).thenReturn(Response.status(200).build());
+		Mockito.when(rest.carsDAO.getCar(1)).thenReturn(Response.status(200).build());
+		Mockito.when(rest.carsDAO.postCar(car)).thenReturn(Response.status(201).build());
+		Mockito.when(rest.carsDAO.updateCar(car, 1)).thenReturn(Response.status(200).build());
+		Mockito.when(rest.carsDAO.deleteCar(1)).thenReturn(Response.status(204).build());
+		Mockito.when(rest.carsDAO.deleteCar(0)).thenReturn(Response.status(404).build());
 
 	}
 

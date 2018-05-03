@@ -10,6 +10,8 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import Logger.Log;
+
 public class Sender {
 	
 	// URL of the JMS server.
@@ -18,6 +20,8 @@ public class Sender {
 	private static String subject = "pasiveMqQueue";
 
 	public static void sendMesg(String messageToSend, String JMSType) throws JMSException {
+		
+		Log.logger.info("Enters Sender.sendMesg");
 		
 		// Getting JMS connection from the server and starting it
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
@@ -32,5 +36,8 @@ public class Sender {
 		message.setJMSType(JMSType);
 		producer.send(message);
 		connection.close();
+		
+		Log.logger.info("Exits Sender.sendMesg");
+		
 	}
 }

@@ -21,6 +21,8 @@ public class Controller {
 	Transaction transaction = session.beginTransaction();
 
 	public Response getAllCars() {
+		
+		Log.logger.info("Enters Controller.getAllCars");
 
 		try {
 			// Since the casting of every single car is not correct, a possible solution is
@@ -38,12 +40,15 @@ public class Controller {
 			response = Response.status(500).build();
 			session.getTransaction().commit();
 		}
+		
+		Log.logger.info("Exits Controller.getAllCars");
 
 		return response;
 	}
 
 	public Response getCar(final int carId) {
-
+		
+		Log.logger.info("Enters Controller.getCar");
 
 		try {
 			Car car = (Car) session.get(Car.class, carId);
@@ -59,11 +64,15 @@ public class Controller {
 			response = Response.status(500).build();
 			session.getTransaction().commit();
 		}
+		
+		Log.logger.info("Exits Controller.getCar");
 
 		return response;
 	}
 
 	public Response postCar(final Car car) {
+		
+		Log.logger.info("Enters Controller.postCar");
 
 
 		try {
@@ -77,11 +86,15 @@ public class Controller {
 			// Do an empty commit in order to avoid nested transactions
 			session.getTransaction().commit();
 		}
+		
+		Log.logger.info("Exits Controller.postCar");
 
 		return response;
 	}
 
 	public Response updateCar(final Car newData, final int carId) {
+		
+		Log.logger.info("Enters Controller.updateCar");
 
 		Car carToUpdate = null;
 
@@ -112,11 +125,15 @@ public class Controller {
 			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}
+		
+		Log.logger.info("Exits Controller.updateCar");
 
 		return response;
 	}
 
 	public Response deleteCar(final int carId) {
+		
+		Log.logger.info("Enters Controller.deleteCar");
 
 
 		Car car = (Car) session.get(Car.class, carId);
@@ -135,6 +152,8 @@ public class Controller {
 			response = Response.status(404).build();
 			session.getTransaction().commit();
 		}
+		
+		Log.logger.info("Exits Controller.deleteCar");
 
 		return response;
 	}

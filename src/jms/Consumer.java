@@ -24,6 +24,8 @@ public class Consumer {
 	MessageConsumer updateConsumer;
 
 	Consumer() throws JMSException {
+		
+		Log.logger.info("Enters Consumer.Consumer");
 
 		connectionFactory = new ActiveMQConnectionFactory();
 		connectionFactory.setBrokerURL("tcp://localhost:61616");
@@ -41,6 +43,8 @@ public class Consumer {
 
 		updateConsumer = session.createConsumer(session.createQueue("activeMqQueue"), "JMSType = 'Update'");
 		updateConsumer.setMessageListener(new UpdateListener());
+		
+		Log.logger.info("Exits Consumer.Consumer");
 
 	}
 

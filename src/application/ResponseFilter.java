@@ -1,7 +1,5 @@
 package application;
 
-import java.io.IOException;
-
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -25,6 +23,9 @@ public class ResponseFilter implements ContainerResponseFilter {
 	 *            Http response.
 	 */
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+		
+		Log.logger.info("Enters ResponseFilter.filter");
+		
 		MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 		headers.add("Access-Control-Allow-Origin", "*");
 		headers.add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
@@ -37,5 +38,7 @@ public class ResponseFilter implements ContainerResponseFilter {
 
 		Log.logger.info("Response: Status-" + responseContext.getStatus() + " Headers: "
 				+ responseContext.getHeaders().toString());
+		
+		Log.logger.info("Exits ResponseFilter.filter");
 	}
 }

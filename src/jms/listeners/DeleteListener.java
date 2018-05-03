@@ -16,6 +16,8 @@ public class DeleteListener extends Listener implements MessageListener {
 	@Override
 	public void onMessage(Message message) {
 		
+		Log.logger.info("Enters DeleteListener.onMessage");
+		
 		TextMessage textMessage = (TextMessage) message;
 		
 		try {
@@ -26,6 +28,8 @@ public class DeleteListener extends Listener implements MessageListener {
 		} catch (JMSException e) {
 			Log.logger.warning(e.getMessage());
 		}
+		
+		Log.logger.info("Exits DeleteListener.onMessage");
 		
 	}
 

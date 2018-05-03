@@ -18,6 +18,9 @@ public class UpdateListener extends Listener implements MessageListener{
 
 	@Override
 	public void onMessage(Message message) {
+		
+		Log.logger.info("Enters UpdateListener.onMessage");
+		
 		TextMessage textMessage = (TextMessage) message;
 		try {
 			String carIdAsString = textMessage.getStringProperty("carId");
@@ -30,5 +33,8 @@ public class UpdateListener extends Listener implements MessageListener{
 		} catch (JMSException e) {
 			Log.logger.warning(e.getMessage());
 		}
+		
+		Log.logger.info("Exits UpdateListener.onMessage");
+		
 	}
 }

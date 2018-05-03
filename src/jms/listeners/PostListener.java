@@ -18,6 +18,9 @@ public class PostListener extends Listener implements MessageListener {
 
 	@Override
 	public void onMessage(Message message) {
+		
+		Log.logger.info("Enters PostListener.onMessage");
+		
 		TextMessage textMessage = (TextMessage) message;
 		try {
 			String jsonCar = textMessage.getText();
@@ -28,5 +31,7 @@ public class PostListener extends Listener implements MessageListener {
 		} catch (JMSException e) {
 			Log.logger.warning(e.getMessage());
 		}
+		
+		Log.logger.info("Exits PostListener.onMessage");
 	}
 }
