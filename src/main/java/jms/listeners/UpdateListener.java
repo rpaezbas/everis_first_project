@@ -1,0 +1,40 @@
+package jms.listeners;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import car.entity.Car;
+import jms.Sender;
+import logger.Log;
+
+public class UpdateListener extends Listener implements MessageListener{
+
+	// This constructor specifies the dateFormat expected in the json object
+	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+
+	@Override
+	public void onMessage(Message message) {
+		
+		Log.logger.info("Enters UpdateListener.onMessage");
+		
+		TextMessage textMessage = (TextMessage) message;
+		try {
+			String carIdAsString = textMessage.getStringProperty("carId");
+			int carId = Integer.parseInt(carIdAsString);
+			String jsonCar = textMessage.getText();
+			Car carToUpdate = gson.fromJson(jsonCar, Car.class);
+			//super.crudController.updateCar(carToUpdate, carId);
+			Log.logger.info("Received message:" + textMessage.getText());
+			Sender.sendMesg(textMessage.getText(), "Update");
+		} catch (JMSException e) {
+			Log.logger.warning(e.getMessage());
+		}
+		
+		Log.logger.info("Exits UpdateListener.onMessage");
+		
+	}
+}
