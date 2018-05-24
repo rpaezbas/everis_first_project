@@ -53,6 +53,6 @@ public class RequestFilter implements ContainerRequestFilter {
 	 */
 	public boolean validate(String path) {
 
-		return path.matches("/cars((\\/\\d+)|\\/)?") || path.matches("/carsjms");
+		return path.matches("/cars((\\/\\d+)|\\/)?") || path.matches("/carsjms") || path.matches("/brands");
 	}
 }

@@ -1,6 +1,9 @@
-package cars.control;
+package cars.boundary;
+
+import java.util.ArrayList;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,20 +16,23 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+import org.hibernate.HibernateException;
+
 import Logger.Log;
-import cars.boundary.Controller;
 import cars.entity.Car;
 import interceptor.Interceptor;
 import utils.AuthUtil;
+import utils.ValidatorUtil;
 
-@Interceptors(Interceptor.class)
+@Stateless
 @Path("/cars")
-public class Rest {
+public class CarResource {
 
 	Response response;
 
 	@EJB
-	public Controller carsDAO;
+	public CarService carService;
 
 	// Get every car in table Car
 	@GET
@@ -37,16 +43,28 @@ public class Rest {
 
 		Log.logger.info("Enters Rest.getAllCars");
 
+		Car[] cars;
+
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
+
+			// First checks wich of the parameters has been filled, filter by country if its
+			// not null, filter by brand if its not null
+
 			if (country == null && brandName == null) {
-				response = carsDAO.getAllCars();
+				cars = carService.getAllCars();
+				response = Response.status(200).entity(cars).build();
+
 			} else if (country != null && brandName == null) {
-				response = carsDAO.getCarsByCountry(country);
+				cars = carService.getCarsByCountry(country);
+				response = Response.status(200).entity(cars).build();
+
 			} else if (country == null && brandName != null) {
-				response = carsDAO.getCarsByBrand(brandName);
+				cars = carService.getCarsByBrand(brandName);
+				response = Response.status(200).entity(cars).build();
 			}
+
 		} else {
-			response = Response.status(401).build();
+			Response.status(401).build();
 		}
 
 		Log.logger.info("Exits Rest.getAllCars");
@@ -65,7 +83,14 @@ public class Rest {
 		Log.logger.info("Enters Rest.getCarbyId");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = carsDAO.getCar(carId);
+
+			Car car = carService.getCar(carId);
+			if (car != null) {
+				response = Response.status(200).entity(car).build();
+			} else {
+				response = Response.status(204).entity(car).build();
+			}
+
 		} else {
 			response = Response.status(401).build();
 		}
@@ -85,7 +110,19 @@ public class Rest {
 		Log.logger.info("Enters Rest.postCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "admin")) {
-			response = carsDAO.postCar(car);
+
+			ArrayList<String> violantionMessages = ValidatorUtil.validate(car);
+			if (violantionMessages.size() > 0) {
+				response = Response.status(400).build();
+			}
+
+			try {
+				Car newCar = carService.postCar(car);
+				response = Response.status(201).entity(newCar).build();
+			} catch (HibernateException e) {
+				response = Response.status(400).build();
+			}
+
 		} else {
 			response = Response.status(401).build();
 		}
@@ -106,7 +143,19 @@ public class Rest {
 		Log.logger.info("Enters Rest.updateCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = carsDAO.updateCar(updatedCar, carId);
+
+			Car deprecatedCar = carService.getCar(carId);
+			if (deprecatedCar != null) {
+				try {
+					Car newCar = carService.updateCar(deprecatedCar, updatedCar);
+					response = Response.status(204).entity(newCar).build();
+				} catch (HibernateException e) {
+					response = Response.status(400).build();
+				}
+			} else {
+				response = Response.status(204).build();
+			}
+
 		} else {
 			response = Response.status(401).build();
 		}
@@ -126,7 +175,13 @@ public class Rest {
 		Log.logger.info("Enters Rest.deleteCar");
 
 		if (AuthUtil.verifyRoleInToken(authorization, "user")) {
-			response = carsDAO.deleteCar(carId);
+			Car carToDelete = carService.getCar(carId);
+			if(carToDelete != null) {
+				carService.deleteCar(carToDelete);
+				response = Response.status(200).build();
+			}else {
+				response = Response.status(204).build();
+			}
 		} else {
 			response = Response.status(401).build();
 		}

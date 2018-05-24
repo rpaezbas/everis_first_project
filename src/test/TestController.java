@@ -5,7 +5,7 @@ import junit.framework.*;
 import org.mockito.Mockito;
 
 import brands.entity.Brand;
-import cars.boundary.Controller;
+import cars.boundary.CarService;
 import cars.entity.Car;
 
 import org.hibernate.HibernateException;
@@ -22,7 +22,7 @@ public class TestController extends TestCase {
 
 	List<Car> mockCarList = new ArrayList<Car>();
 	Connection mockConnection = Mockito.mock(Connection.class);
-	Controller controller = new Controller();
+	CarService controller = new CarService();
 	
 	Car validCar = new Car();
 	Car invalidCar = new Car();

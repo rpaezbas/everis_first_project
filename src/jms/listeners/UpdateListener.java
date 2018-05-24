@@ -27,7 +27,8 @@ public class UpdateListener extends Listener implements MessageListener{
 			int carId = Integer.parseInt(carIdAsString);
 			String jsonCar = textMessage.getText();
 			Car carToUpdate = gson.fromJson(jsonCar, Car.class);
-			super.crudController.updateCar(carToUpdate, carId);
+			Car deprecatedCar = super.carService.getCar(carId);
+			super.carService.updateCar(carToUpdate, deprecatedCar);
 			Log.logger.info("Received message:" + textMessage.getText());
 			Sender.sendMesg(textMessage.getText(), "Update");
 		} catch (JMSException e) {

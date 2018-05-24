@@ -5,6 +5,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import Logger.Log;
+import cars.entity.Car;
 import jms.Sender;
 
 public class DeleteListener extends Listener implements MessageListener {
@@ -22,7 +23,8 @@ public class DeleteListener extends Listener implements MessageListener {
 		
 		try {
 			int carToDeleteId = Integer.parseInt(textMessage.getText());
-			super.crudController.deleteCar(carToDeleteId);
+			Car carToDelete = super.carService.getCar(carToDeleteId);
+			super.carService.deleteCar(carToDelete);
 			Log.logger.info("Received message: " + textMessage.getText());
 			Sender.sendMesg(textMessage.getText(), "Delete");
 		} catch (JMSException e) {

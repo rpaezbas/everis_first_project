@@ -25,7 +25,7 @@ public class PostListener extends Listener implements MessageListener {
 		try {
 			String jsonCar = textMessage.getText();
 			Car carToSave = gson.fromJson(jsonCar, Car.class);
-			super.crudController.postCar(carToSave);
+			super.carService.postCar(carToSave);
 			Log.logger.info("Received message: " + textMessage.getText());
 			Sender.sendMesg(textMessage.getText(), "Post");
 		} catch (JMSException e) {

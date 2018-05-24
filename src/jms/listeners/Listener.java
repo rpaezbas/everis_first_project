@@ -2,9 +2,10 @@ package jms.listeners;
 
 import javax.ejb.EJB;
 
-import cars.boundary.Controller;
+import cars.boundary.CarResource;
+import cars.boundary.CarService;
 
 public class Listener {
 	@EJB 
-	Controller crudController;
+	CarService carService;
 }
